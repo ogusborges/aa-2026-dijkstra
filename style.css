@@ -14,6 +14,26 @@
   --c-source:    #10b981;
   --c-target:    #ef4444;
   --c-path:      #fbbf24;
+
+  --btn-bg:    #334155;
+  --btn-bg-h:  #3e4c63;
+  --btn-bdr:   #475569;
+  --canvas-bg: #0b1120;
+}
+
+html.light {
+  --bg:        #ffffff;
+  --panel:     #f8f9fa;
+  --panel-2:   #f0f2f5;
+  --ink:       #202124;
+  --muted:     #5f6368;
+  --line:      #dadce0;
+  --accent:    #1a73e8;
+  --btn-bg:    #e0e0e0;
+  --btn-bg-h:  #d5d5d5;
+  --btn-bdr:   #bdbdbd;
+  --canvas-bg: #f1f3f4;
+  --c-frontier:#1a73e8;
 }
 
 * { box-sizing: border-box; }
@@ -64,14 +84,14 @@ button {
   font: inherit;
   font-size: 13px;
   color: var(--ink);
-  background: #334155;
-  border: 1px solid #475569;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-bdr);
   border-radius: 8px;
   padding: 6px 10px;
   cursor: pointer;
   transition: background .12s, border-color .12s, transform .05s;
 }
-button:hover { background: #3e4c63; }
+button:hover { background: var(--btn-bg-h); }
 button:active { transform: translateY(1px); }
 button.primary { background: #0ea5e9; border-color: #0284c7; color: #06283d; font-weight: 700; }
 button.primary:hover { background: #38bdf8; }
@@ -103,7 +123,7 @@ input[type="range"] { accent-color: var(--accent); }
 
 #canvasWrap {
   position: relative;
-  background: #0b1120;
+  background: var(--canvas-bg);
   border: 1px solid var(--line);
   border-radius: 12px;
   overflow: hidden;
@@ -131,7 +151,7 @@ input[type="range"] { accent-color: var(--accent); }
   width: 13px; height: 13px;
   border-radius: 50%;
   display: inline-block;
-  border: 2px solid #0b1120;
+  border: 2px solid var(--canvas-bg);
 }
 .sw.unvisited { background: var(--c-unvisited); }
 .sw.frontier  { background: var(--c-frontier); }
@@ -226,4 +246,23 @@ input[type="range"] { accent-color: var(--accent); }
 
 @media (max-width: 880px) {
   #layout { grid-template-columns: 1fr; }
+}
+
+/* ---- Theme toggle button ---- */
+.theme-toggle {
+  margin-left: auto;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* pseudocode active highlight adapts to light theme */
+html.light #pseudocode li.active {
+  background: rgba(26,115,232,.12);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* queue head pill adapts */
+html.light .queue .qitem.head {
+  background: var(--c-frontier);
+  color: #ffffff;
 }

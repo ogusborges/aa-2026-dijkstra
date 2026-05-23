@@ -6,6 +6,7 @@
    ============================================================ */
 
 const PIN_R = 22;
+const C = () => window.CTHEME?.c ?? {};
 
 /* ---- Map data ---- */
 const NODES = [
@@ -55,12 +56,12 @@ const PRESETS = [
 
 /* background zone fills */
 const DISTRICTS = [
-  { label:"Centro",      x:316, y:148, w:192, h:222, fill:"rgba(30,58,95,0.30)",  r:14 },
-  { label:"Campus UFU",  x: 70, y:348, w:175, h:145, fill:"rgba(20,83,45,0.30)",  r:12 },
-  { label:"Zona Norte",  x:545, y: 52, w:260, h:188, fill:"rgba(45,50,70,0.28)",  r:12 },
-  { label:"Leste",       x:650, y:225, w:152, h:150, fill:"rgba(30,58,95,0.22)",  r:10 },
-  { label:"Zona Sul",    x:588, y:400, w:158, h:110, fill:"rgba(90,20,20,0.20)",  r:10 },
-  { label:"Gastronomia", x: 74, y: 52, w:152, h:115, fill:"rgba(80,40,10,0.28)",  r:10 },
+  { label:"Centro",      x:316, y:148, w:192, h:222, fill:"rgba(30,58,95,0.30)",  lightFill:"rgba(25,118,210,0.09)",  r:14 },
+  { label:"Campus UFU",  x: 70, y:348, w:175, h:145, fill:"rgba(20,83,45,0.30)",  lightFill:"rgba(46,125,50,0.12)",   r:12 },
+  { label:"Zona Norte",  x:545, y: 52, w:260, h:188, fill:"rgba(45,50,70,0.28)",  lightFill:"rgba(69,90,100,0.09)",   r:12 },
+  { label:"Leste",       x:650, y:225, w:152, h:150, fill:"rgba(30,58,95,0.22)",  lightFill:"rgba(25,118,210,0.07)",  r:10 },
+  { label:"Zona Sul",    x:588, y:400, w:158, h:110, fill:"rgba(90,20,20,0.20)",  lightFill:"rgba(211,47,47,0.08)",   r:10 },
+  { label:"Gastronomia", x: 74, y: 52, w:152, h:115, fill:"rgba(80,40,10,0.28)",  lightFill:"rgba(230,81,0,0.09)",    r:10 },
 ];
 
 /* decorative building blocks */
@@ -309,25 +310,26 @@ function draw() {
 }
 
 function drawBackground() {
-  ctx.fillStyle="#131927"; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle=C().mapBg; ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.save();
-  ctx.strokeStyle="rgba(255,255,255,0.022)"; ctx.lineWidth=1;
+  ctx.strokeStyle=C().grid; ctx.lineWidth=1;
   for(let x=0;x<canvas.width;x+=65){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
   for(let y=0;y<canvas.height;y+=65){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
   ctx.restore();
   ctx.save();
+  const isLight=window.CTHEME?.isLight();
   for (const d of DISTRICTS) {
-    ctx.fillStyle=d.fill; roundRect(d.x,d.y,d.w,d.h,d.r); ctx.fill();
-    ctx.strokeStyle="rgba(255,255,255,0.04)"; ctx.lineWidth=1;
+    ctx.fillStyle=isLight?d.lightFill:d.fill; roundRect(d.x,d.y,d.w,d.h,d.r); ctx.fill();
+    ctx.strokeStyle=C().districtBdr; ctx.lineWidth=1;
     roundRect(d.x,d.y,d.w,d.h,d.r); ctx.stroke();
-    ctx.fillStyle="rgba(255,255,255,0.15)";
+    ctx.fillStyle=C().districtLabel;
     ctx.font="bold 9.5px Segoe UI,sans-serif";
     ctx.textAlign="left"; ctx.textBaseline="top";
     ctx.fillText(d.label.toUpperCase(),d.x+7,d.y+5);
   }
   ctx.restore();
   ctx.save();
-  ctx.fillStyle="rgba(255,255,255,0.038)"; ctx.strokeStyle="rgba(255,255,255,0.055)"; ctx.lineWidth=0.5;
+  ctx.fillStyle=C().blockFill; ctx.strokeStyle=C().blockBdr; ctx.lineWidth=0.5;
   for(const [bx,by,bw,bh] of BLOCKS){ roundRect(bx,by,bw,bh,3); ctx.fill(); roundRect(bx,by,bw,bh,3); ctx.stroke(); }
   ctx.restore();
 }
@@ -347,14 +349,14 @@ function drawSegment(a, b, edge, hot, onPath) {
   let roadColor, roadWidth;
   if(onPath){roadColor="#fbbf24";roadWidth=10;}
   else if(hot){roadColor="#f59e0b";roadWidth=type==="highway"?9:type==="main"?6:4;}
-  else{roadColor=type==="highway"?"#94a3b8":type==="main"?"#6b7280":"#4b5563";
+  else{roadColor=type==="highway"?C().roadHW:type==="main"?C().roadMain:C().roadSlow;
        roadWidth=type==="highway"?8:type==="main"?4:2;}
   if(type==="slow"&&!onPath&&!hot) ctx.setLineDash([10,7]);
   ctx.lineWidth=roadWidth; ctx.strokeStyle=roadColor;
   ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
   ctx.setLineDash([]);
   if(type==="highway"&&!onPath&&!hot){
-    ctx.strokeStyle="rgba(251,191,36,0.32)"; ctx.lineWidth=1.5; ctx.setLineDash([16,12]);
+    ctx.strokeStyle=C().hwStripe; ctx.lineWidth=1.5; ctx.setLineDash([16,12]);
     ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.setLineDash([]);
   }
   const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
@@ -362,22 +364,22 @@ function drawSegment(a, b, edge, hot, onPath) {
     const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;
     const rx=mx+(-dy/len)*14, ry=my+(dx/len)*14;
     ctx.font="italic 9.5px Segoe UI,sans-serif";
-    ctx.fillStyle="rgba(148,163,184,0.5)";
+    ctx.fillStyle=C().roadName;
     ctx.textAlign="center"; ctx.textBaseline="middle";
     ctx.fillText(edge.name,rx,ry);
   }
   const label=edge.weight+" min";
   ctx.font="bold 11px Consolas,monospace";
   const tw=ctx.measureText(label).width;
-  ctx.fillStyle="#0d1524"; roundRect(mx-tw/2-5,my-10,tw+10,20,5); ctx.fill();
-  ctx.strokeStyle=onPath?"#fbbf24":hot?"#f59e0b":"#374151"; ctx.lineWidth=1;
+  ctx.fillStyle=C().pillBg; roundRect(mx-tw/2-5,my-10,tw+10,20,5); ctx.fill();
+  ctx.strokeStyle=onPath?"#fbbf24":hot?"#f59e0b":C().pillBdr; ctx.lineWidth=1;
   roundRect(mx-tw/2-5,my-10,tw+10,20,5); ctx.stroke();
-  ctx.fillStyle=onPath?"#fbbf24":hot?"#f59e0b":"#9ca3af";
+  ctx.fillStyle=onPath?"#fbbf24":hot?"#f59e0b":C().pillTxt;
   ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(label,mx,my);
   if (edge.icon) {
-    ctx.fillStyle="#0d1524";
+    ctx.fillStyle=C().pillBg;
     ctx.beginPath(); ctx.arc(mx,my-22,12,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle=onPath?"#fbbf24":hot?"#f59e0b":"#374151";
+    ctx.strokeStyle=onPath?"#fbbf24":hot?"#f59e0b":C().pillBdr;
     ctx.lineWidth=1; ctx.stroke();
     ctx.font="15px serif"; ctx.textAlign="center"; ctx.textBaseline="middle";
     ctx.fillStyle="#ffffff";
@@ -397,11 +399,11 @@ function drawPin(n, state, step) {
   ctx.shadowColor="rgba(0,0,0,0.5)"; ctx.shadowBlur=10; ctx.shadowOffsetY=4;
   ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
   ctx.fillStyle=fill; ctx.fill();
-  ctx.strokeStyle="#0d1524"; ctx.lineWidth=2.5; ctx.stroke();
+  ctx.strokeStyle=C().pinStroke; ctx.lineWidth=2.5; ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(cx-6,cy+r-2); ctx.lineTo(cx+6,cy+r-2); ctx.lineTo(cx,cy+r+9);
   ctx.closePath(); ctx.fillStyle=fill; ctx.fill();
-  ctx.strokeStyle="#0d1524"; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.strokeStyle=C().pinStroke; ctx.lineWidth=1.5; ctx.stroke();
   ctx.shadowColor="transparent"; ctx.shadowBlur=0; ctx.shadowOffsetY=0;
   if(n.id===sourceId){ctx.beginPath();ctx.arc(cx,cy,r+5,0,Math.PI*2);ctx.strokeStyle="#10b981";ctx.lineWidth=3;ctx.stroke();}
   if(n.id===targetId){ctx.beginPath();ctx.arc(cx,cy,r+5,0,Math.PI*2);ctx.strokeStyle="#ef4444";ctx.lineWidth=3;ctx.stroke();}
@@ -417,14 +419,14 @@ function drawPin(n, state, step) {
     const txt=Number.isFinite(d)?d+"m":"∞";
     ctx.font="bold 11px Consolas,monospace";
     const tw=ctx.measureText(txt).width, bx=cx, by=cy-r-12;
-    ctx.fillStyle="#0d1524"; roundRect(bx-tw/2-4,by-8,tw+8,16,4); ctx.fill();
-    ctx.strokeStyle="#374151"; ctx.lineWidth=1; roundRect(bx-tw/2-4,by-8,tw+8,16,4); ctx.stroke();
-    ctx.fillStyle=Number.isFinite(d)?"#fde68a":"#64748b"; ctx.fillText(txt,bx,by);
+    ctx.fillStyle=C().badgeBg; roundRect(bx-tw/2-4,by-8,tw+8,16,4); ctx.fill();
+    ctx.strokeStyle=C().badgeBdr; ctx.lineWidth=1; roundRect(bx-tw/2-4,by-8,tw+8,16,4); ctx.stroke();
+    ctx.fillStyle=Number.isFinite(d)?C().badgeTxtFin:C().badgeTxtInf; ctx.fillText(txt,bx,by);
   }
   const lw=ctx.measureText(n.label).width, labelY=cy+r+13;
   ctx.font="bold 11px Segoe UI,sans-serif";
-  ctx.fillStyle="rgba(13,21,36,0.88)"; roundRect(cx-lw/2-4,labelY-1,lw+8,13,3); ctx.fill();
-  ctx.fillStyle=state==="path"?"#fbbf24":"#e2e8f0";
+  ctx.fillStyle=C().labelBg; roundRect(cx-lw/2-4,labelY-1,lw+8,13,3); ctx.fill();
+  ctx.fillStyle=state==="path"?"#fbbf24":C().labelTxt;
   ctx.textAlign="center"; ctx.textBaseline="top"; ctx.fillText(n.label,cx,labelY);
   ctx.restore();
 }
@@ -548,3 +550,5 @@ window.addEventListener("keydown",e=>{
 /* ---- Init ---- */
 loadPreset(0);
 renderAll();
+
+window.addEventListener("themechange", renderAll);

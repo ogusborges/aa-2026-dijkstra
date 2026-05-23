@@ -5,6 +5,8 @@
    Vanilla JS. Graph editor on <canvas> + step-recorded run.
    ============================================================ */
 
+const C = () => window.CTHEME?.c ?? {};
+
 // ---------- Data model ----------
 let nodes = [];   // { id, label, x, y }
 let edges = [];   // { from, to, weight }   (from/to are node ids)
@@ -451,14 +453,14 @@ function drawEdge(a, b, weight, opt) {
   const text = String(weight);
   ctx.font = "bold 13px Consolas, monospace";
   const tw = ctx.measureText(text).width;
-  ctx.fillStyle = "#0b1120";
+  ctx.fillStyle = C().sbPillBg;
   roundRect(mx - tw / 2 - 6, my - 11, tw + 12, 22, 6);
   ctx.fill();
-  ctx.strokeStyle = opt.onPath ? "#fbbf24" : "#475569";
+  ctx.strokeStyle = opt.onPath ? "#fbbf24" : C().sbPillBdr;
   ctx.lineWidth = 1;
   roundRect(mx - tw / 2 - 6, my - 11, tw + 12, 22, 6);
   ctx.stroke();
-  ctx.fillStyle = opt.onPath ? "#fbbf24" : "#cbd5e1";
+  ctx.fillStyle = opt.onPath ? "#fbbf24" : C().sbPillTxt;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(text, mx, my);
@@ -501,11 +503,11 @@ function drawNode(n, state, step) {
     ctx.font = "bold 12px Consolas, monospace";
     const tw = ctx.measureText(txt).width;
     const bx = n.x, by = n.y - NODE_R - 12;
-    ctx.fillStyle = "#0b1120";
+    ctx.fillStyle = C().badgeBg;
     roundRect(bx - tw / 2 - 5, by - 9, tw + 10, 18, 5); ctx.fill();
-    ctx.strokeStyle = "#334155"; ctx.lineWidth = 1;
+    ctx.strokeStyle = C().badgeBdr; ctx.lineWidth = 1;
     roundRect(bx - tw / 2 - 5, by - 9, tw + 10, 18, 5); ctx.stroke();
-    ctx.fillStyle = Number.isFinite(d) ? "#fde68a" : "#64748b";
+    ctx.fillStyle = Number.isFinite(d) ? C().badgeTxtFin : C().badgeTxtInf;
     ctx.fillText(txt, bx, by);
   }
   ctx.restore();
@@ -764,3 +766,5 @@ document.getElementById("directed").addEventListener("change", (e) => {
 setMode("addNode");
 loadSample();
 renderAll();
+
+window.addEventListener("themechange", draw);

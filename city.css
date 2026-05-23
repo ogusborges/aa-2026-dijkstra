@@ -27,7 +27,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #060d1a;
+  background: var(--canvas-bg);
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 6px 18px;
@@ -50,15 +50,15 @@ select {
   font: inherit;
   font-size: 13px;
   color: var(--ink);
-  background: #334155;
-  border: 1px solid #475569;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-bdr);
   border-radius: 8px;
   padding: 6px 10px;
   cursor: pointer;
   outline: none;
   min-width: 160px;
 }
-select:hover { background: #3e4c63; }
+select:hover { background: var(--btn-bg-h); }
 
 /* ---- Legend road indicators ---- */
 .leg-road {
