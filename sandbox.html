@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dijkstra's Algorithm — Interactive Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header id="topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <a href="index.html" style="font-size:12px;color:#94a3b8;text-decoration:none;border:1px solid #334155;border-radius:8px;padding:4px 10px;white-space:nowrap">&#8592; Demos</a>
+      <h1>Dijkstra's Shortest Path — Interactive Demo</h1>
+    </div>
+    <p class="hint" id="modeHint">Pick a tool, build a graph, then press <b>Run</b>.</p>
+  </header>
+
+  <div id="toolbar">
+    <div class="tool-group" role="group" aria-label="Edit tools">
+      <span class="group-label">Edit</span>
+      <button class="tool" data-mode="addNode">＋ Node</button>
+      <button class="tool" data-mode="addEdge">／ Edge</button>
+      <button class="tool" data-mode="move">✥ Move</button>
+      <button class="tool" data-mode="setSource">◉ Source</button>
+      <button class="tool" data-mode="setTarget">◎ Target</button>
+      <button class="tool" data-mode="delete">🗑 Delete</button>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Playback">
+      <span class="group-label">Run</span>
+      <button id="btnRun" class="primary">▶ Run</button>
+      <button id="btnBack" title="Step back">⏮ Back</button>
+      <button id="btnStep" title="Step forward">⏭ Step</button>
+      <button id="btnPlay" title="Play / pause">⏯ Play</button>
+      <button id="btnReset" title="Clear the algorithm run">↻ Reset</button>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Options">
+      <span class="group-label">Options</span>
+      <label class="speed">Speed
+        <input type="range" id="speed" min="1" max="10" value="5" />
+      </label>
+      <label class="check"><input type="checkbox" id="directed" /> Directed</label>
+      <button id="btnSample">Load Sample</button>
+      <button id="btnClear">Clear All</button>
+    </div>
+  </div>
+
+  <main id="layout">
+    <section id="canvasWrap">
+      <canvas id="graph" width="900" height="640"></canvas>
+      <div id="legend">
+        <span><i class="sw unvisited"></i>Unvisited</span>
+        <span><i class="sw frontier"></i>In queue</span>
+        <span><i class="sw current"></i>Current</span>
+        <span><i class="sw visited"></i>Finalized</span>
+        <span><i class="sw source"></i>Source</span>
+        <span><i class="sw target"></i>Target</span>
+        <span><i class="sw path"></i>Shortest path</span>
+      </div>
+    </section>
+
+    <aside id="sidebar">
+      <div class="panel">
+        <h2>Algorithm</h2>
+        <ol id="pseudocode" aria-label="Pseudocode">
+          <li data-line="0"><code>dist[source] = 0; all others = &#8734;</code></li>
+          <li data-line="1"><code>push source into priority queue</code></li>
+          <li data-line="2"><code>while queue not empty:</code></li>
+          <li data-line="3" class="indent1"><code>u = pop node with min dist</code></li>
+          <li data-line="4" class="indent1"><code>mark u visited</code></li>
+          <li data-line="5" class="indent1"><code>for each neighbor v of u:</code></li>
+          <li data-line="6" class="indent2"><code>alt = dist[u] + weight(u, v)</code></li>
+          <li data-line="7" class="indent2"><code>if alt &lt; dist[v]:</code></li>
+          <li data-line="8" class="indent3"><code>dist[v] = alt; prev[v] = u</code></li>
+          <li data-line="9" class="indent3"><code>push / update v in queue</code></li>
+          <li data-line="10"><code>reconstruct path from prev[]</code></li>
+        </ol>
+      </div>
+
+      <div class="panel">
+        <h2>Priority Queue <small>(min by distance)</small></h2>
+        <div id="queue" class="queue">—</div>
+      </div>
+
+      <div class="panel">
+        <h2>Distances</h2>
+        <div class="table-wrap">
+          <table id="distTable">
+            <thead><tr><th>Node</th><th>Dist</th><th>Prev</th><th>State</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel narration-panel">
+        <h2>Step <span id="stepCounter"></span></h2>
+        <p id="narration">Build or load a graph, set a source, then press <b>Run</b> to record the algorithm's steps.</p>
+        <p id="result" class="result"></p>
+      </div>
+    </aside>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

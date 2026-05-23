@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meadowville City Navigator — Dijkstra GPS Demo</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="city.css" />
+</head>
+<body>
+  <header id="topbar">
+    <div id="topbar-left">
+      <a href="index.html" id="back-link">&#8592; Demos</a>
+      <h1>&#x1F5FA; Meadowville City Navigator</h1>
+    </div>
+    <div id="address-bar">
+      <span id="addr-from">&#128204; —</span>
+      <span class="addr-arrow">&#8594;</span>
+      <span id="addr-to">&#127937; —</span>
+    </div>
+  </header>
+
+  <div id="toolbar">
+    <div class="tool-group" role="group" aria-label="Scenario">
+      <span class="group-label">Scenario</span>
+      <select id="scenarioPicker" aria-label="Route scenario">
+        <option value="0">Home &#x2192; Airport</option>
+        <option value="1">Home &#x2192; Hospital</option>
+        <option value="2">Mall &#x2192; Station</option>
+        <option value="3">School &#x2192; Caf&#233;</option>
+      </select>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Custom start/end">
+      <span class="group-label">Custom</span>
+      <button class="tool" id="btnFrom">&#9711; From</button>
+      <button class="tool" id="btnTo">&#9676; To</button>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Playback">
+      <span class="group-label">Navigate</span>
+      <button id="btnRun" class="primary">&#9654; Find Route</button>
+      <button id="btnBack" title="Step back">&#9198; Back</button>
+      <button id="btnStep" title="Step forward">&#9197; Step</button>
+      <button id="btnPlay" title="Play / pause">&#9199; Play</button>
+      <button id="btnReset" title="Reset">&#x21BB; Reset</button>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Speed">
+      <label class="speed">Speed
+        <input type="range" id="speed" min="1" max="10" value="5" />
+      </label>
+    </div>
+  </div>
+
+  <main id="layout">
+    <section id="canvasWrap">
+      <canvas id="graph" width="900" height="560"></canvas>
+      <div id="legend">
+        <span><b>Roads:</b></span>
+        <span class="leg-road highway"><span class="road-line"></span>Highway (&le;5 min)</span>
+        <span class="leg-road main"><span class="road-line"></span>Main road (6&ndash;10 min)</span>
+        <span class="leg-road slow"><span class="road-line"></span>Slow road (&gt;10 min)</span>
+        <span style="margin-left:8px"><b>Pins:</b></span>
+        <span><i class="sw frontier"></i>In queue</span>
+        <span><i class="sw current"></i>Checking</span>
+        <span><i class="sw visited"></i>Confirmed</span>
+        <span><i class="sw path"></i>On route</span>
+      </div>
+    </section>
+
+    <aside id="sidebar">
+      <div class="panel">
+        <h2>Algorithm</h2>
+        <ol id="pseudocode" aria-label="Pseudocode">
+          <li data-line="0"><code>dist[source] = 0; all others = &#8734;</code></li>
+          <li data-line="1"><code>push source into priority queue</code></li>
+          <li data-line="2"><code>while queue not empty:</code></li>
+          <li data-line="3" class="indent1"><code>u = pop node with min dist</code></li>
+          <li data-line="4" class="indent1"><code>mark u visited</code></li>
+          <li data-line="5" class="indent1"><code>for each neighbor v of u:</code></li>
+          <li data-line="6" class="indent2"><code>alt = dist[u] + weight(u, v)</code></li>
+          <li data-line="7" class="indent2"><code>if alt &lt; dist[v]:</code></li>
+          <li data-line="8" class="indent3"><code>dist[v] = alt; prev[v] = u</code></li>
+          <li data-line="9" class="indent3"><code>push / update v in queue</code></li>
+          <li data-line="10"><code>reconstruct path from prev[]</code></li>
+        </ol>
+      </div>
+
+      <div class="panel">
+        <h2>Priority Queue <small>(min by time)</small></h2>
+        <div id="queue" class="queue">&#8212;</div>
+      </div>
+
+      <div class="panel">
+        <h2>Travel Times</h2>
+        <div class="table-wrap">
+          <table id="distTable">
+            <thead><tr><th>Location</th><th>Best</th><th>Via</th><th>State</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel narration-panel">
+        <h2>GPS <span id="stepCounter"></span></h2>
+        <p id="narration">Select a scenario above, then press <b>Find Route</b> to begin navigation.</p>
+        <p id="result" class="result"></p>
+        <div id="routeCard" class="route-card" style="display:none"></div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="city.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dijkstra's Algorithm — Demos</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+
+    #hub-header {
+      text-align: center;
+      padding: 48px 24px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    #hub-header h1 { margin: 0 0 10px; font-size: 28px; letter-spacing: .4px; }
+    #hub-header p  { margin: 0; color: var(--muted); font-size: 14px; max-width: 520px; margin: 0 auto; }
+
+    #cards {
+      display: flex;
+      gap: 28px;
+      justify-content: center;
+      align-items: stretch;
+      padding: 48px 24px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      width: 320px;
+      padding: 32px 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color .2s, transform .15s, box-shadow .2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.45);
+    }
+    .card-icon { font-size: 48px; line-height: 1; }
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .card-sub {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      color: var(--accent);
+    }
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+    .card-features {
+      list-style: none;
+      padding: 0; margin: 0;
+      font-size: 12.5px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .card-features li::before { content: "✓  "; color: var(--accent); }
+    .card-cta {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent);
+      color: #06283d;
+      font-weight: 700;
+      font-size: 13px;
+      border-radius: 10px;
+      padding: 10px 18px;
+      border: none;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: background .12s;
+    }
+    .card-cta:hover { background: #67d7f7; }
+    .card.city .card-cta { background: #f59e0b; color: #1c0a00; }
+    .card.city .card-cta:hover { background: #fbbf24; }
+    .card.city .card-sub { color: #f59e0b; }
+    .card.city:hover { border-color: #f59e0b; }
+
+    footer {
+      text-align: center;
+      padding: 16px;
+      font-size: 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+  <div id="hub-header">
+    <h1>Dijkstra's Algorithm — Visualizations</h1>
+    <p>Two interactive demos showing Dijkstra's shortest-path algorithm: one from first
+    principles, one applied to a real-world GPS routing scenario.</p>
+  </div>
+
+  <div id="cards">
+    <a class="card" href="sandbox.html">
+      <div class="card-icon">🔬</div>
+      <div class="card-sub">Algorithm Sandbox</div>
+      <div class="card-title">Graph Explorer</div>
+      <div class="card-desc">
+        Build any weighted graph from scratch and watch Dijkstra run step-by-step.
+        Add nodes, connect them with weighted edges, and explore how the priority queue
+        and distances evolve.
+      </div>
+      <ul class="card-features">
+        <li>Build any graph interactively</li>
+        <li>Step forward &amp; backward</li>
+        <li>Live pseudocode highlighting</li>
+        <li>Priority queue + distance table</li>
+        <li>Directed &amp; undirected modes</li>
+      </ul>
+      <span class="card-cta">Open Sandbox →</span>
+    </a>
+
+    <a class="card city" href="city.html">
+      <div class="card-icon">🗺</div>
+      <div class="card-sub">Real-World Use Case</div>
+      <div class="card-title">City Navigator</div>
+      <div class="card-desc">
+        GPS routing through Meadowville city. Watch Dijkstra find the fastest driving
+        route between landmarks — the <em>geographically shorter</em> road is often
+        <em>slower</em>, and the algorithm knows it.
+      </div>
+      <ul class="card-features">
+        <li>4 preset real-world routes</li>
+        <li>Highways, main roads &amp; slow roads</li>
+        <li>Route card with time saved</li>
+        <li>GPS-style step narration</li>
+        <li>Click any landmark to reroute</li>
+      </ul>
+      <span class="card-cta">Open City Map →</span>
+    </a>
+  </div>
+
+  <footer>Dijkstra's algorithm visualizations · open <code>index.html</code> in any browser</footer>
+</body>
+</html>
