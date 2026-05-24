@@ -30,21 +30,11 @@
 
     <div class="tool-group" role="group" aria-label="Paint terrain">
       <span class="group-label">Paint</span>
-      <button class="tool paint-btn active" id="paintRoad"     data-terrain="road">
-        <span class="paint-swatch" style="background:#374151"></span>Road ×1
-      </button>
-      <button class="tool paint-btn" id="paintGrass"    data-terrain="grass">
-        <span class="paint-swatch" style="background:#14532d"></span>Grass ×3
-      </button>
-      <button class="tool paint-btn" id="paintSwamp"    data-terrain="swamp">
-        <span class="paint-swatch" style="background:#134e4a"></span>Swamp ×8
-      </button>
-      <button class="tool paint-btn" id="paintMountain" data-terrain="mountain">
-        <span class="paint-swatch" style="background:#292524"></span>Mtn ×15
-      </button>
-      <button class="tool paint-btn" id="paintWall"     data-terrain="wall">
-        <span class="paint-swatch" style="background:#0f172a"></span>Wall &#8734;
-      </button>
+      <button class="tool paint-btn active" id="paintRoad"     data-terrain="road">🛣️ Road ×1</button>
+      <button class="tool paint-btn" id="paintGrass"    data-terrain="grass">🌿 Grass ×3</button>
+      <button class="tool paint-btn" id="paintSwamp"    data-terrain="swamp">🌊 Swamp ×8</button>
+      <button class="tool paint-btn" id="paintMountain" data-terrain="mountain">⛰️ Mtn ×15</button>
+      <button class="tool paint-btn" id="paintWall"     data-terrain="wall">🧱 Wall &#8734;</button>
     </div>
 
     <div class="tool-group" role="group" aria-label="Place source / destination">
@@ -79,11 +69,11 @@
       <canvas id="graph" width="900" height="540"></canvas>
       <div id="legend">
         <span><b>Terrain:</b></span>
-        <span class="leg-terrain"><span class="leg-swatch" style="background:#374151"></span>Road ×1</span>
-        <span class="leg-terrain"><span class="leg-swatch" style="background:#14532d"></span>Grass ×3</span>
-        <span class="leg-terrain"><span class="leg-swatch" style="background:#134e4a"></span>Swamp ×8</span>
-        <span class="leg-terrain"><span class="leg-swatch" style="background:#292524"></span>Mountain ×15</span>
-        <span class="leg-terrain"><span class="leg-swatch" style="background:#0f172a"></span>Wall ∞</span>
+        <span class="leg-terrain"><span class="leg-swatch" style="background:#374151"></span>🛣️ Road ×1</span>
+        <span class="leg-terrain"><span class="leg-swatch" style="background:#14532d"></span>🌿 Grass ×3</span>
+        <span class="leg-terrain"><span class="leg-swatch" style="background:#134e4a"></span>🌊 Swamp ×8</span>
+        <span class="leg-terrain"><span class="leg-swatch" style="background:#292524"></span>⛰️ Mtn ×15</span>
+        <span class="leg-terrain"><span class="leg-swatch" style="background:#0f172a"></span>🧱 Wall ∞</span>
         <span style="margin-left:8px"><b>State:</b></span>
         <span class="leg-state"><span class="leg-circle" style="background:rgba(37,99,235,0.7)"></span>In queue</span>
         <span class="leg-state"><span class="leg-circle" style="background:rgba(245,158,11,0.9)"></span>Checking</span>

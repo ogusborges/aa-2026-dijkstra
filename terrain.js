@@ -4,11 +4,11 @@ const COLS = 30, ROWS = 18, CELL = 30;
 const C = () => window.CTHEME?.c ?? {};
 
 const TERRAIN = {
-  road:     { cost:1,        label:'Road',     darkFill:'#374151', lightFill:'#d1d5db' },
-  grass:    { cost:3,        label:'Grass',    darkFill:'#14532d', lightFill:'#bbf7d0' },
-  swamp:    { cost:8,        label:'Swamp',    darkFill:'#134e4a', lightFill:'#99f6e4' },
-  mountain: { cost:15,       label:'Mountain', darkFill:'#1c1917', lightFill:'#d6d3d1' },
-  wall:     { cost:Infinity, label:'Wall',     darkFill:'#050a14', lightFill:'#64748b' },
+  road:     { cost:1,        label:'Road',     darkFill:'#374151', lightFill:'#d1d5db', icon:'🛣️'  },
+  grass:    { cost:3,        label:'Grass',    darkFill:'#14532d', lightFill:'#bbf7d0', icon:'🌿'  },
+  swamp:    { cost:8,        label:'Swamp',    darkFill:'#134e4a', lightFill:'#99f6e4', icon:'🌊'  },
+  mountain: { cost:15,       label:'Mountain', darkFill:'#1c1917', lightFill:'#d6d3d1', icon:'⛰️'  },
+  wall:     { cost:Infinity, label:'Wall',     darkFill:'#050a14', lightFill:'#64748b', icon:'🧱'  },
 };
 
 const STATE_OVERLAY = {
@@ -315,6 +315,18 @@ function draw() {
         ctx.fillRect(x, y, CELL, CELL);
       }
 
+      // terrain icon — fade when algorithm state is active
+      const icon = TERRAIN[t].icon;
+      if (icon) {
+        const alphaMap = { idle:0.72, frontier:0.42, current:0.25, visited:0.40, path:0.22 };
+        ctx.globalAlpha = alphaMap[state] ?? 0.72;
+        ctx.font = '15px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(icon, x + CELL / 2, y + CELL / 2);
+        ctx.globalAlpha = 1;
+      }
+
       // cell grid lines
       ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.05)';
       ctx.lineWidth = 0.5;
@@ -407,7 +419,8 @@ function renderPanels() {
       const { r, c } = unkey(item.key);
       const cls   = i === 0 ? 'qitem head' : 'qitem';
       const label = item.dist < Infinity ? item.dist : '∞';
-      return `<span class="${cls}">(${r},${c})=${label}</span>`;
+      const icon  = TERRAIN[grid[r][c]]?.icon ?? '';
+      return `<span class="${cls}">${icon}(${r},${c})=${label}</span>`;
     }).join(' ');
     if (step.frontier.length > 8) {
       queueEl.innerHTML +=
@@ -431,12 +444,13 @@ function renderPanels() {
       const via   = step.prev[k]
         ? (() => { const { r:vr, c:vc } = unkey(step.prev[k]); return `(${vr},${vc})`; })()
         : '—';
+      const tIcon = TERRAIN[grid[r][c]]?.icon ?? '';
       let cls = '', badge = '—';
       if (state === 'current') { cls = 'r-current'; badge = 'checking'; }
       else if (state === 'path') { cls = 'r-path'; badge = 'on route'; }
       else if (state === 'visited') { cls = 'r-visited'; badge = 'confirmed'; }
       else if (state === 'frontier') { badge = 'queued'; }
-      return `<tr class="${cls}"><td>(${r},${c})</td><td>${d}</td><td>${via}</td><td><span class="badge">${badge}</span></td></tr>`;
+      return `<tr class="${cls}"><td>${tIcon}(${r},${c})</td><td>${d}</td><td>${via}</td><td><span class="badge">${badge}</span></td></tr>`;
     }).join('');
   }
 
@@ -485,7 +499,8 @@ function buildTerrainCard(step) {
   let html = `<div class="tc-header">&#9679; Optimal Route — ${pathCells.length} cells</div>`;
   segs.forEach(seg => {
     const total = seg.cost === Infinity ? '∞' : seg.count * seg.cost;
-    html += `<div class="tc-row">${seg.t.charAt(0).toUpperCase()+seg.t.slice(1)} &times; ${seg.count}</div>`;
+    const icon  = TERRAIN[seg.t].icon;
+    html += `<div class="tc-row">${icon} ${seg.t.charAt(0).toUpperCase()+seg.t.slice(1)} &times; ${seg.count}</div>`;
     html += `<div class="tc-sub">${seg.count} &times; ${seg.cost} = ${total}</div>`;
   });
 
