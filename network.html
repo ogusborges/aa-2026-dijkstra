@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Packet Tracer — Dijkstra Network Demo</title>
+  <script src="theme.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="network.css" />
+</head>
+<body>
+  <header id="topbar">
+    <div id="topbar-left">
+      <a href="index.html" id="back-link">&#8592; Demos</a>
+      <h1>&#128230; Packet Tracer — Network Routing</h1>
+    </div>
+    <div id="address-bar">
+      <span id="addr-from">&#128230; —</span>
+      <span class="addr-arrow">&#8594;</span>
+      <span id="addr-to">&#127919; —</span>
+    </div>
+    <button class="theme-toggle" onclick="window.CTHEME.toggle()"></button>
+  </header>
+
+  <div id="toolbar">
+    <div class="tool-group" role="group" aria-label="Scenario">
+      <span class="group-label">Scenario</span>
+      <select id="scenarioPicker" aria-label="Routing scenario">
+        <option value="0">Home PC &#x2192; Game Server</option>
+        <option value="1">Home PC &#x2192; Cloud</option>
+        <option value="2">ISP-North &#x2192; CDN Edge</option>
+        <option value="3">Home PC &#x2192; CDN Edge</option>
+      </select>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Custom source/destination">
+      <span class="group-label">Custom</span>
+      <button class="tool" id="btnFrom">&#9711; Source</button>
+      <button class="tool" id="btnTo">&#9676; Dest</button>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Playback">
+      <span class="group-label">Route</span>
+      <button id="btnRun" class="primary">&#9654; Find Route</button>
+      <button id="btnBack" title="Step back">&#9198; Back</button>
+      <button id="btnStep" title="Step forward">&#9197; Step</button>
+      <button id="btnPlay" title="Play / pause">&#9199; Play</button>
+      <button id="btnReset" title="Reset">&#x21BB; Reset</button>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Speed">
+      <label class="speed">Speed
+        <input type="range" id="speed" min="1" max="10" value="5" />
+      </label>
+    </div>
+  </div>
+
+  <main id="layout">
+    <section id="canvasWrap">
+      <canvas id="graph" width="900" height="560"></canvas>
+      <div id="legend">
+        <span><b>Links:</b></span>
+        <span class="leg-link fiber"><span class="link-line"></span>Fiber</span>
+        <span class="leg-link cable"><span class="link-line"></span>Cable</span>
+        <span class="leg-link wireless"><span class="link-line"></span>Wireless</span>
+        <span class="leg-link local"><span class="link-line"></span>Local</span>
+        <span style="margin-left:8px"><b>Devices:</b></span>
+        <span><i class="sw frontier"></i>In queue</span>
+        <span><i class="sw current"></i>Checking</span>
+        <span><i class="sw visited"></i>Confirmed</span>
+        <span><i class="sw path"></i>On route</span>
+      </div>
+    </section>
+
+    <aside id="sidebar">
+      <div class="panel">
+        <h2>Algorithm</h2>
+        <ol id="pseudocode" aria-label="Pseudocode">
+          <li data-line="0"><code>dist[source] = 0; all others = &#8734;</code></li>
+          <li data-line="1"><code>push source into priority queue</code></li>
+          <li data-line="2"><code>while queue not empty:</code></li>
+          <li data-line="3" class="indent1"><code>u = pop device with min latency</code></li>
+          <li data-line="4" class="indent1"><code>mark u visited</code></li>
+          <li data-line="5" class="indent1"><code>for each neighbor v of u:</code></li>
+          <li data-line="6" class="indent2"><code>alt = dist[u] + weight(u, v)</code></li>
+          <li data-line="7" class="indent2"><code>if alt &lt; dist[v]:</code></li>
+          <li data-line="8" class="indent3"><code>dist[v] = alt; prev[v] = u</code></li>
+          <li data-line="9" class="indent3"><code>push / update v in queue</code></li>
+          <li data-line="10"><code>reconstruct path from prev[]</code></li>
+        </ol>
+      </div>
+
+      <div class="panel">
+        <h2>Priority Queue <small>(min latency)</small></h2>
+        <div id="queue" class="queue">—</div>
+      </div>
+
+      <div class="panel">
+        <h2>Latency Table</h2>
+        <div class="table-wrap">
+          <table id="distTable">
+            <thead><tr><th>Device</th><th>Latency</th><th>Via</th><th>State</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel narration-panel">
+        <h2>Packet Log <span id="stepCounter"></span></h2>
+        <p id="narration">Select a scenario, then press <b>Find Route</b> to route the packet.</p>
+        <p id="result" class="result"></p>
+        <div id="latencyCard" class="latency-card" style="display:none"></div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="network.js"></script>
+</body>
+</html>

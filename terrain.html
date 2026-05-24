@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terrain Pathfinder — Dijkstra Grid Demo</title>
+  <script src="theme.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="terrain.css" />
+</head>
+<body>
+  <header id="topbar">
+    <div id="topbar-left">
+      <a href="index.html" id="back-link">&#8592; Demos</a>
+      <h1>&#127956; Terrain Pathfinder</h1>
+    </div>
+    <button class="theme-toggle" onclick="window.CTHEME.toggle()"></button>
+  </header>
+
+  <div id="toolbar">
+    <div class="tool-group" role="group" aria-label="Preset">
+      <span class="group-label">Preset</span>
+      <select id="presetPicker" aria-label="Map preset">
+        <option value="0">Mountain Pass</option>
+        <option value="1">Wetlands</option>
+        <option value="2">City Streets</option>
+        <option value="3">The Maze</option>
+      </select>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Paint terrain">
+      <span class="group-label">Paint</span>
+      <button class="tool paint-btn active" id="paintRoad"     data-terrain="road">
+        <span class="paint-swatch" style="background:#374151"></span>Road ×1
+      </button>
+      <button class="tool paint-btn" id="paintGrass"    data-terrain="grass">
+        <span class="paint-swatch" style="background:#14532d"></span>Grass ×3
+      </button>
+      <button class="tool paint-btn" id="paintSwamp"    data-terrain="swamp">
+        <span class="paint-swatch" style="background:#134e4a"></span>Swamp ×8
+      </button>
+      <button class="tool paint-btn" id="paintMountain" data-terrain="mountain">
+        <span class="paint-swatch" style="background:#292524"></span>Mtn ×15
+      </button>
+      <button class="tool paint-btn" id="paintWall"     data-terrain="wall">
+        <span class="paint-swatch" style="background:#0f172a"></span>Wall &#8734;
+      </button>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Place source / destination">
+      <span class="group-label">Place</span>
+      <button class="tool" id="btnFrom">&#9711; Source</button>
+      <button class="tool" id="btnTo">&#9676; Dest</button>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Playback">
+      <span class="group-label">Route</span>
+      <button id="btnRun" class="primary">&#9654; Find Path</button>
+      <button id="btnBack"  title="Step back">&#9198; Back</button>
+      <button id="btnStep"  title="Step forward">&#9197; Step</button>
+      <button id="btnPlay"  title="Play / pause">&#9199; Play</button>
+      <button id="btnReset" title="Reset">&#x21BB; Reset</button>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Speed">
+      <label class="speed">Speed
+        <input type="range" id="speed" min="1" max="10" value="5" />
+      </label>
+    </div>
+
+    <div class="tool-group" role="group" aria-label="Grid">
+      <span class="group-label">Grid</span>
+      <button class="tool" id="btnClear">&#x2715; Clear</button>
+    </div>
+  </div>
+
+  <main id="layout">
+    <section id="canvasWrap">
+      <canvas id="graph" width="900" height="540"></canvas>
+      <div id="legend">
+        <span><b>Terrain:</b></span>
+        <span class="leg-terrain"><span class="leg-swatch" style="background:#374151"></span>Road ×1</span>
+        <span class="leg-terrain"><span class="leg-swatch" style="background:#14532d"></span>Grass ×3</span>
+        <span class="leg-terrain"><span class="leg-swatch" style="background:#134e4a"></span>Swamp ×8</span>
+        <span class="leg-terrain"><span class="leg-swatch" style="background:#292524"></span>Mountain ×15</span>
+        <span class="leg-terrain"><span class="leg-swatch" style="background:#0f172a"></span>Wall ∞</span>
+        <span style="margin-left:8px"><b>State:</b></span>
+        <span class="leg-state"><span class="leg-circle" style="background:rgba(37,99,235,0.7)"></span>In queue</span>
+        <span class="leg-state"><span class="leg-circle" style="background:rgba(245,158,11,0.9)"></span>Checking</span>
+        <span class="leg-state"><span class="leg-circle" style="background:rgba(22,163,74,0.6)"></span>Confirmed</span>
+        <span class="leg-state"><span class="leg-circle" style="background:rgba(251,191,36,0.9)"></span>On route</span>
+      </div>
+    </section>
+
+    <aside id="sidebar">
+      <div class="panel">
+        <h2>Algorithm</h2>
+        <ol id="pseudocode" aria-label="Pseudocode">
+          <li data-line="0"><code>dist[source] = 0; all others = &#8734;</code></li>
+          <li data-line="1"><code>push source into priority queue</code></li>
+          <li data-line="2"><code>while queue not empty:</code></li>
+          <li data-line="3" class="indent1"><code>u = pop cell with min cost</code></li>
+          <li data-line="4" class="indent1"><code>if u == target: done!</code></li>
+          <li data-line="5" class="indent1"><code>mark u visited</code></li>
+          <li data-line="6" class="indent1"><code>for each neighbor v of u:</code></li>
+          <li data-line="7" class="indent2"><code>if v is wall: skip</code></li>
+          <li data-line="8" class="indent2"><code>alt = dist[u] + terrain_cost(v)</code></li>
+          <li data-line="9" class="indent2"><code>if alt &lt; dist[v]:</code></li>
+          <li data-line="10" class="indent3"><code>dist[v] = alt; prev[v] = u</code></li>
+          <li data-line="11" class="indent3"><code>push / update v in queue</code></li>
+          <li data-line="12"><code>reconstruct path from prev[]</code></li>
+        </ol>
+      </div>
+
+      <div class="panel">
+        <h2>Priority Queue <small>(min cost)</small></h2>
+        <div id="queue" class="queue">—</div>
+      </div>
+
+      <div class="panel">
+        <h2>Exploration Log</h2>
+        <div class="table-wrap">
+          <table id="distTable">
+            <thead><tr><th>Cell</th><th>Cost</th><th>Via</th><th>State</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel narration-panel">
+        <h2>Path Log <span id="stepCounter"></span></h2>
+        <p id="narration">Select a preset or paint a map, then press <b>Find Path</b>.</p>
+        <p id="result" class="result"></p>
+        <div id="terrainCard" class="terrain-card" style="display:none"></div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="terrain.js"></script>
+</body>
+</html>

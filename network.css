@@ -1,0 +1,77 @@
+/* Network Packet Tracer — overrides and extensions on top of style.css */
+
+:root {
+  --net-accent:   #06b6d4;
+  --net-accent-h: #22d3ee;
+}
+
+/* ---- Accent colour ---- */
+button.primary            { background: var(--net-accent); border-color: #0891b2; color: #001a2e; }
+button.primary:hover      { background: var(--net-accent-h); }
+button.tool.active        { background: var(--net-accent); border-color: var(--net-accent); color: #001a2e; }
+input[type="range"]       { accent-color: var(--net-accent); }
+.panel h2                 { color: var(--net-accent); }
+#back-link:hover          { border-color: var(--net-accent); color: var(--ink); }
+
+/* ---- Topbar layout ---- */
+#topbar      { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+#topbar-left { display:flex; align-items:center; gap:14px; }
+#back-link {
+  font-size:12px; color:var(--muted); text-decoration:none;
+  border:1px solid var(--line); border-radius:8px; padding:4px 10px;
+  transition:border-color .15s, color .15s; white-space:nowrap;
+}
+
+/* ---- Address bar ---- */
+#address-bar {
+  display:flex; align-items:center; gap:8px;
+  background:var(--canvas-bg); border:1px solid var(--line);
+  border-radius:999px; padding:6px 18px; font-size:13px; white-space:nowrap;
+}
+#addr-from  { color:#10b981; font-weight:700; }
+#addr-to    { color:#ef4444; font-weight:700; }
+.addr-arrow { color:var(--muted); }
+
+/* ---- Scenario picker ---- */
+select {
+  font:inherit; font-size:13px; color:var(--ink);
+  background:var(--btn-bg); border:1px solid var(--btn-bdr);
+  border-radius:8px; padding:6px 10px; cursor:pointer; outline:none; min-width:190px;
+}
+select:hover { background:var(--btn-bg-h); }
+
+/* ---- Link type legend ---- */
+.leg-link              { display:inline-flex; align-items:center; gap:6px; }
+.leg-link .link-line   { display:inline-block; border-radius:2px; }
+
+.leg-link.fiber    .link-line { width:28px; height:6px; background:#38bdf8; }
+.leg-link.cable    .link-line { width:28px; height:4px; background:#a78bfa; }
+.leg-link.wireless .link-line { width:28px; border-top:3px dashed #f97316; background:none; }
+.leg-link.local    .link-line { width:28px; border-top:2px dashed #34d399; background:none; }
+
+html.light .leg-link.fiber    .link-line { background:#1a73e8; }
+html.light .leg-link.cable    .link-line { background:#7c3aed; }
+html.light .leg-link.wireless .link-line { border-top-color:#d97706; }
+html.light .leg-link.local    .link-line { border-top-color:#059669; }
+
+/* ---- Latency card (route summary) ---- */
+.latency-card {
+  margin-top:10px; background:var(--panel-2);
+  border:1px solid var(--line); border-radius:10px;
+  padding:10px 14px; font-size:12.5px; line-height:1.75;
+}
+.lc-header {
+  font-weight:700; font-size:13.5px; margin-bottom:6px;
+  padding-bottom:6px; border-bottom:1px solid var(--line);
+}
+.lc-hop  { color:var(--ink); }
+.lc-link { color:var(--muted); padding-left:14px; font-size:11.5px; }
+.lc-total {
+  margin-top:6px; padding-top:6px; border-top:1px solid var(--line);
+  font-weight:700; color:var(--net-accent-h); font-size:13px;
+}
+.lc-alt  { color:var(--muted); font-size:11px; margin-top:3px; }
+.lc-save { color:#22c55e; font-size:11px; }
+
+/* ---- Narration panel ---- */
+.narration-panel #narration { font-size:12.5px; }

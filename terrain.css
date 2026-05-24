@@ -1,0 +1,77 @@
+/* Terrain Pathfinder — overrides on top of style.css */
+
+:root {
+  --terrain-accent:   #84cc16;
+  --terrain-accent-h: #a3e635;
+}
+
+button.primary            { background: var(--terrain-accent); border-color: #65a30d; color: #0f2800; }
+button.primary:hover      { background: var(--terrain-accent-h); }
+button.tool.active        { background: var(--terrain-accent); border-color: var(--terrain-accent); color: #0f2800; }
+input[type="range"]       { accent-color: var(--terrain-accent); }
+.panel h2                 { color: var(--terrain-accent); }
+#back-link:hover          { border-color: var(--terrain-accent); color: var(--ink); }
+
+/* ---- Topbar ---- */
+#topbar      { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+#topbar-left { display:flex; align-items:center; gap:14px; }
+#back-link {
+  font-size:12px; color:var(--muted); text-decoration:none;
+  border:1px solid var(--line); border-radius:8px; padding:4px 10px;
+  transition:border-color .15s, color .15s; white-space:nowrap;
+}
+
+/* ---- Scenario picker ---- */
+select {
+  font:inherit; font-size:13px; color:var(--ink);
+  background:var(--btn-bg); border:1px solid var(--btn-bdr);
+  border-radius:8px; padding:6px 10px; cursor:pointer; outline:none; min-width:180px;
+}
+select:hover { background:var(--btn-bg-h); }
+
+/* ---- Paint tool buttons ---- */
+.paint-btn { display:inline-flex; align-items:center; gap:5px; }
+.paint-swatch {
+  width:11px; height:11px; border-radius:2px;
+  display:inline-block; flex-shrink:0;
+  border:1px solid rgba(255,255,255,0.25);
+}
+html.light .paint-swatch { border-color:rgba(0,0,0,0.18); }
+
+/* ---- Terrain legend below canvas ---- */
+#legend {
+  display:flex; flex-wrap:wrap; align-items:center;
+  gap:8px 16px; padding:7px 10px;
+  font-size:12px; color:var(--muted);
+  border-top:1px solid var(--line);
+}
+.leg-terrain { display:inline-flex; align-items:center; gap:5px; }
+.leg-swatch {
+  width:14px; height:14px; border-radius:3px;
+  border:1px solid rgba(255,255,255,0.18);
+  display:inline-block; flex-shrink:0;
+}
+html.light .leg-swatch { border-color:rgba(0,0,0,0.15); }
+.leg-state  { display:inline-flex; align-items:center; gap:5px; }
+.leg-circle {
+  width:12px; height:12px; border-radius:50%;
+  display:inline-block; flex-shrink:0;
+}
+
+/* ---- Route summary card ---- */
+.terrain-card {
+  margin-top:10px; background:var(--panel-2);
+  border:1px solid var(--line); border-radius:10px;
+  padding:10px 14px; font-size:12.5px; line-height:1.75;
+}
+.tc-header {
+  font-weight:700; font-size:13.5px; margin-bottom:6px;
+  padding-bottom:6px; border-bottom:1px solid var(--line);
+}
+.tc-row  { color:var(--ink); }
+.tc-sub  { color:var(--muted); padding-left:12px; font-size:11.5px; }
+.tc-total {
+  margin-top:6px; padding-top:6px; border-top:1px solid var(--line);
+  font-weight:700; color:var(--terrain-accent-h); font-size:13px;
+}
+.tc-alt  { color:var(--muted); font-size:11px; margin-top:3px; }

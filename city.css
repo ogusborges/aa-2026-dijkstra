@@ -77,7 +77,7 @@ select:hover { background: var(--btn-bg-h); }
 /* ---- Route card ---- */
 .route-card {
   margin-top: 10px;
-  background: #060d1a;
+  background: var(--panel-2);
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 10px 14px;
@@ -101,7 +101,7 @@ select:hover { background: var(--btn-bg-h); }
   color: var(--gps-accent-h);
   font-size: 13px;
 }
-.rc-alt { color: #4b5563; font-size: 11px; margin-top: 3px; }
+.rc-alt { color: var(--muted); font-size: 11px; margin-top: 3px; }
 .rc-save { color: #22c55e; font-size: 11px; }
 
 /* ---- Narration GPS label ---- */

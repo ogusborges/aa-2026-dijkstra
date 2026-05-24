@@ -466,7 +466,7 @@ function buildRouteCard(step) {
   let html=`<div class="rc-header">${from.icon} ${from.label} &rarr; ${to.icon} ${to.label}</div>`;
   for(let i=0;i<ids.length;i++){
     const n=getNode(ids[i]);
-    html+=`<div class="rc-step" style="display:flex;justify-content:space-between"><span>${n.icon} <b>${n.label}</b></span><span style="color:#94a3b8">${step.distances[n.id]} min</span></div>`;
+    html+=`<div class="rc-step" style="display:flex;justify-content:space-between"><span>${n.icon} <b>${n.label}</b></span><span style="color:var(--muted)">${step.distances[n.id]} min</span></div>`;
     if(i<ids.length-1){
       const e=getEdge(ids[i],ids[i+1]);
       const tl=e.weight<=5?"&#x1F6E3; Highway":e.weight<=10?"Main road":"&#x1F6B6; Slow road";

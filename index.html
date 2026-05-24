@@ -99,6 +99,14 @@
     .card.ubl .card-cta:hover { background: #34d399; }
     .card.ubl .card-sub { color: #10b981; }
     .card.ubl:hover { border-color: #10b981; }
+    .card.net .card-cta { background: #06b6d4; color: #001a2e; }
+    .card.net .card-cta:hover { background: #22d3ee; }
+    .card.net .card-sub { color: #06b6d4; }
+    .card.net:hover { border-color: #06b6d4; }
+    .card.terrain .card-cta { background: #84cc16; color: #0f2800; }
+    .card.terrain .card-cta:hover { background: #a3e635; }
+    .card.terrain .card-sub { color: #84cc16; }
+    .card.terrain:hover { border-color: #84cc16; }
 
     footer {
       text-align: center;
@@ -154,6 +162,44 @@
         <li>Click any landmark to reroute</li>
       </ul>
       <span class="card-cta">Open Uberlândia →</span>
+    </a>
+
+    <a class="card net" href="network.html">
+      <div class="card-icon">📦</div>
+      <div class="card-sub">Network Routing</div>
+      <div class="card-title">Packet Tracer</div>
+      <div class="card-desc">
+        Route a data packet through a simulated internet backbone.
+        Discover why a single 22ms direct-peering link beats a multi-hop
+        backbone path — Dijkstra finds the truth the naive route misses.
+      </div>
+      <ul class="card-features">
+        <li>Fiber, cable, wireless &amp; local links</li>
+        <li>ISP → backbone → CDN topology</li>
+        <li>4 preset routing scenarios</li>
+        <li>Latency table with predecessor column</li>
+        <li>Click any device to reroute</li>
+      </ul>
+      <span class="card-cta">Open Packet Tracer →</span>
+    </a>
+
+    <a class="card terrain" href="terrain.html">
+      <div class="card-icon">🏔</div>
+      <div class="card-sub">Grid Pathfinding</div>
+      <div class="card-title">Terrain Pathfinder</div>
+      <div class="card-desc">
+        Navigate through a tile-based world where terrain type decides movement
+        cost — road is fast, swamp is slow, mountains are grueling, walls are
+        impassable. Watch Dijkstra flood outward through the cheapest terrain.
+      </div>
+      <ul class="card-features">
+        <li>Paint your own terrain map</li>
+        <li>5 terrain types with real costs</li>
+        <li>4 preset maps with surprises</li>
+        <li>Step-by-step flood fill visualization</li>
+        <li>Route cost breakdown per terrain</li>
+      </ul>
+      <span class="card-cta">Open Terrain Map →</span>
     </a>
 
     <a class="card city" href="city.html">
