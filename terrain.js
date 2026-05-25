@@ -4,11 +4,11 @@ const COLS = 30, ROWS = 18, CELL = 30;
 const C = () => window.CTHEME?.c ?? {};
 
 const TERRAIN = {
-  road:     { cost:1,        label:'Road',     darkFill:'#374151', lightFill:'#d1d5db', icon:'🛣️'  },
-  grass:    { cost:3,        label:'Grass',    darkFill:'#14532d', lightFill:'#bbf7d0', icon:'🌿'  },
-  swamp:    { cost:8,        label:'Swamp',    darkFill:'#134e4a', lightFill:'#99f6e4', icon:'🌊'  },
-  mountain: { cost:15,       label:'Mountain', darkFill:'#1c1917', lightFill:'#d6d3d1', icon:'⛰️'  },
-  wall:     { cost:Infinity, label:'Wall',     darkFill:'#050a14', lightFill:'#64748b', icon:'🧱'  },
+  road:     { cost:1,        label:'Road',     darkFill:'#374151', lightFill:'#d1d5db', icon:''  },
+  grass:    { cost:3,        label:'Grass',    darkFill:'#14532d', lightFill:'#bbf7d0', icon:''  },
+  swamp:    { cost:8,        label:'Water',    darkFill:'#134e4a', lightFill:'#99f6e4', icon:''  },
+  mountain: { cost:15,       label:'Mountain', darkFill:'#1c1917', lightFill:'#d6d3d1', icon:''  },
+  wall:     { cost:Infinity, label:'Wall',     darkFill:'#b67659bd', lightFill:'#862f06bd', icon:''  },
 };
 
 const STATE_OVERLAY = {
@@ -31,8 +31,22 @@ let playTimer = null;
 // ---- canvas setup ----
 const canvas = document.getElementById('graph');
 const ctx    = canvas.getContext('2d');
-const W = canvas.width;   // 900
-const H = canvas.height;  // 540
+const LOGICAL_W = 900;
+const LOGICAL_H = 540;
+const W = LOGICAL_W;
+const H = LOGICAL_H;
+
+function resizeCanvasToDisplaySize() {
+  const dpr  = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width) return;
+  const w = Math.round(rect.width  * dpr);
+  const h = Math.round(rect.height * dpr);
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width  = w;
+    canvas.height = h;
+  }
+}
 
 // ---- MinHeap ----
 class MinHeap {
@@ -292,6 +306,9 @@ function cellState(k, step) {
 
 // ---- draw ----
 function draw() {
+  resizeCanvasToDisplaySize();
+  ctx.save();
+  ctx.scale(canvas.width / LOGICAL_W, canvas.height / LOGICAL_H);
   const step    = stepIndex >= 0 ? steps[stepIndex] : null;
   const isLight = window.CTHEME?.isLight?.() ?? false;
 
@@ -350,6 +367,7 @@ function draw() {
   // source and target markers on top
   drawMarker(src.r, src.c, 'source', step);
   drawMarker(tgt.r, tgt.c, 'target', step);
+  ctx.restore();
 }
 
 function drawMarker(r, c, type, step) {
@@ -609,8 +627,8 @@ document.getElementById('btnTo').addEventListener('click', () => {
 // ---- canvas interaction ----
 function cellFromEvent(e) {
   const rect   = canvas.getBoundingClientRect();
-  const scaleX = canvas.width  / rect.width;
-  const scaleY = canvas.height / rect.height;
+  const scaleX = LOGICAL_W / rect.width;
+  const scaleY = LOGICAL_H / rect.height;
   return {
     r: Math.floor((e.clientY - rect.top)  * scaleY / CELL),
     c: Math.floor((e.clientX - rect.left) * scaleX / CELL),

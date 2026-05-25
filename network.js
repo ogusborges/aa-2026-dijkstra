@@ -65,6 +65,20 @@ const PRESETS = [
 
 const canvas        = document.getElementById("graph");
 const ctx           = canvas.getContext("2d");
+const LOGICAL_W = 900;
+const LOGICAL_H = 560;
+
+function resizeCanvasToDisplaySize() {
+  const dpr  = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width) return;
+  const w = Math.round(rect.width  * dpr);
+  const h = Math.round(rect.height * dpr);
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width  = w;
+    canvas.height = h;
+  }
+}
 const queueEl       = document.getElementById("queue");
 const tableBody     = document.getElementById("distTable").querySelector("tbody");
 const pseudoItems   = Array.from(document.querySelectorAll("#pseudocode li"));
@@ -97,8 +111,8 @@ function roundRect(x, y, w, h, r) {
 }
 function toCanvas(evt) {
   const rect = canvas.getBoundingClientRect();
-  return { x:(evt.clientX-rect.left)*canvas.width/rect.width,
-           y:(evt.clientY-rect.top)*canvas.height/rect.height };
+  return { x:(evt.clientX-rect.left)*LOGICAL_W/rect.width,
+           y:(evt.clientY-rect.top)*LOGICAL_H/rect.height };
 }
 function nodeAt(x, y) {
   for (let i = NODES.length-1; i >= 0; i--)
@@ -271,11 +285,11 @@ function nodeState(id, step) {
 // ---- Background ------------------------------------------------------------
 
 function drawBackground() {
-  ctx.fillStyle = C().mapBg; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = C().mapBg; ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
   ctx.save();
   ctx.strokeStyle = C().grid; ctx.lineWidth = 1;
-  for (let x=0; x<canvas.width; x+=60) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
-  for (let y=0; y<canvas.height; y+=60) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+  for (let x=0; x<LOGICAL_W; x+=60) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,LOGICAL_H); ctx.stroke(); }
+  for (let y=0; y<LOGICAL_H; y+=60) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(LOGICAL_W,y); ctx.stroke(); }
   ctx.restore();
   const isLight = window.CTHEME?.isLight();
   ctx.save();
@@ -346,7 +360,10 @@ function drawDevice(n, state, step) {
 // ---- Full canvas draw ------------------------------------------------------
 
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  resizeCanvasToDisplaySize();
+  ctx.save();
+  ctx.scale(canvas.width / LOGICAL_W, canvas.height / LOGICAL_H);
+  ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
   drawBackground();
   const step = curStep();
   for (const e of EDGES) {
@@ -356,6 +373,7 @@ function draw() {
     drawLink(a, b, e, hot, onPath);
   }
   for (const n of NODES) drawDevice(n, nodeState(n.id, step), step);
+  ctx.restore();
 }
 
 function renderAll() { draw(); renderPanels(); }
