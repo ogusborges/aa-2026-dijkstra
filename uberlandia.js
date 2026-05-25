@@ -85,6 +85,20 @@ let steps = [], stepIndex = -1, timer = null;
 /* ---- DOM ---- */
 const canvas   = document.getElementById("graph");
 const ctx      = canvas.getContext("2d");
+const LOGICAL_W = 900;
+const LOGICAL_H = 560;
+
+function resizeCanvasToDisplaySize() {
+  const dpr  = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width) return;
+  const w = Math.round(rect.width  * dpr);
+  const h = Math.round(rect.height * dpr);
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width  = w;
+    canvas.height = h;
+  }
+}
 const queueEl  = document.getElementById("queue");
 const tableBody = document.querySelector("#distTable tbody");
 const narrationEl  = document.getElementById("narration");
@@ -104,8 +118,8 @@ const getEdge  = (a,b) => EDGES.find(e => (e.from===a&&e.to===b)||(e.from===b&&e
 
 function toCanvas(evt) {
   const r = canvas.getBoundingClientRect();
-  return { x:(evt.clientX-r.left)*(canvas.width/r.width),
-           y:(evt.clientY-r.top)*(canvas.height/r.height) };
+  return { x:(evt.clientX-r.left)*(LOGICAL_W/r.width),
+           y:(evt.clientY-r.top)*(LOGICAL_H/r.height) };
 }
 function pinAt(x, y) {
   for (let i = NODES.length-1; i >= 0; i--) {
@@ -302,19 +316,23 @@ function nodeState(id, step) {
   return "unvisited";
 }
 function draw() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  resizeCanvasToDisplaySize();
+  ctx.save();
+  ctx.scale(canvas.width / LOGICAL_W, canvas.height / LOGICAL_H);
+  ctx.clearRect(0,0,LOGICAL_W,LOGICAL_H);
   drawBackground();
   const step=curStep();
   drawRoads(step);
   drawLandmarks(step);
+  ctx.restore();
 }
 
 function drawBackground() {
-  ctx.fillStyle=C().mapBg; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle=C().mapBg; ctx.fillRect(0,0,LOGICAL_W,LOGICAL_H);
   ctx.save();
   ctx.strokeStyle=C().grid; ctx.lineWidth=1;
-  for(let x=0;x<canvas.width;x+=65){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
-  for(let y=0;y<canvas.height;y+=65){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
+  for(let x=0;x<LOGICAL_W;x+=65){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,LOGICAL_H);ctx.stroke();}
+  for(let y=0;y<LOGICAL_H;y+=65){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(LOGICAL_W,y);ctx.stroke();}
   ctx.restore();
   ctx.save();
   const isLight=window.CTHEME?.isLight();

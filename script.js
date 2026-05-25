@@ -34,6 +34,20 @@ const NODE_R = 22;
 // ---------- DOM ----------
 const canvas = document.getElementById("graph");
 const ctx = canvas.getContext("2d");
+const LOGICAL_W = 900;
+const LOGICAL_H = 640;
+
+function resizeCanvasToDisplaySize() {
+  const dpr  = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width) return;
+  const w = Math.round(rect.width  * dpr);
+  const h = Math.round(rect.height * dpr);
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width  = w;
+    canvas.height = h;
+  }
+}
 const modeHint = document.getElementById("modeHint");
 const queueEl = document.getElementById("queue");
 const tableBody = document.querySelector("#distTable tbody");
@@ -87,8 +101,8 @@ function addAdj(adj, u, v, w) {
 function toCanvas(evt) {
   const r = canvas.getBoundingClientRect();
   return {
-    x: (evt.clientX - r.left) * (canvas.width / r.width),
-    y: (evt.clientY - r.top) * (canvas.height / r.height),
+    x: (evt.clientX - r.left) * (LOGICAL_W / r.width),
+    y: (evt.clientY - r.top) * (LOGICAL_H / r.height),
   };
 }
 function nodeAt(x, y) {
@@ -387,8 +401,11 @@ function isHotEdge(e, step) {
 }
 
 function draw() {
+  resizeCanvasToDisplaySize();
+  ctx.save();
+  ctx.scale(canvas.width / LOGICAL_W, canvas.height / LOGICAL_H);
   const step = curStep();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
 
   // edges
   for (const e of edges) {
@@ -419,6 +436,7 @@ function draw() {
   for (const n of nodes) {
     drawNode(n, nodeState(n.id, step), step);
   }
+  ctx.restore();
 }
 
 function drawEdge(a, b, weight, opt) {
